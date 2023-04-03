@@ -1,0 +1,14 @@
+{
+  "name": "list-scraper",
+  "version": "1.0.0",
+  "description": "Scrapes a google map list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Enrique Goudet",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^19.8.2"
+  }
+}
