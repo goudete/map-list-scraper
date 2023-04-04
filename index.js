@@ -19,13 +19,16 @@ const LIST_URL = 'https://www.google.com/maps/@40.7400281,-73.984887,13z/data=!4
     // console.log("Take a screenshot and save it to the project directory")
     // await page.screenshot({path: 'nyc.png'});
 
+    console.log("Grabbing list title");
+    const titleSelector = 'h1.fontTitleLarge';
+    const listTitle = await page.$eval(titleSelector, element => element.textContent.trim());
+    console.log('List Title: ', listTitle)
+
     console.log("Grab the text content of all elements with jstcache=\"190\"")
-    const titles = await page.$$eval('span[jstcache="190"]', elements =>
+    const placeTitles = await page.$$eval('span[jstcache="190"]', elements =>
       elements.map(element => element.textContent.trim())
     );
-
-    console.log("Log the text content to the console")
-    console.log(titles);
+    console.log('Place Titles: ', placeTitles)
 
     console.log("Close the browser")
     await browser.close();
