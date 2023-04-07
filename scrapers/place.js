@@ -1,6 +1,5 @@
 const axios = require('axios');
-
-const API_KEY = '';
+const { consts } = require('../consts');
 
 
 async function scrapePlaces(placeNamesAndTitles) {
@@ -20,7 +19,7 @@ async function getPlaceId(place) {
   try {
     const encodedAddress = encodeURIComponent(place);
     const { data } = await axios(
-      `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedAddress}&inputtype=textquery&key=${API_KEY}`
+      `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedAddress}&inputtype=textquery&key=${consts.GOOGLE_API_KEY}`
     );
 
     return data?.candidates[0]?.place_id;
@@ -37,7 +36,7 @@ async function getPlaceDetails(placeId) {
       params: {
         place_id: placeId,
         fields: 'place_id,formatted_address,name,rating,website,editorial_summary,price_level,reviews,formatted_phone_number,business_status,url',
-        key: API_KEY,
+        key: consts.GOOGLE_API_KEY,
       }
     });
 
