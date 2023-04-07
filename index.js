@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { scrapeList } = require('./scrapers/list');
 const { scrapePlaces } = require('./scrapers/place');
 const { exportToCsv } = require('./utils');
