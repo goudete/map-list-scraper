@@ -35,7 +35,7 @@ async function getPlaceDetails(placeId) {
       `https://maps.googleapis.com/maps/api/place/details/json`, {
       params: {
         place_id: placeId,
-        fields: 'place_id,formatted_address,name,rating,website,editorial_summary,price_level,reviews,formatted_phone_number,business_status,url',
+        fields: 'place_id,formatted_address,name,rating,website,editorial_summary,price_level,formatted_phone_number,business_status,url',
         key: consts.GOOGLE_API_KEY,
       }
     });
@@ -50,17 +50,16 @@ async function getPlaceDetails(placeId) {
 
 function transformPlaceDetails(result) {
   return {
-    placeId: result?.place_id,
+    place_id: result?.place_id,
     name: result?.name,
     description: result?.editorial_summary?.overview,
     rating: result?.rating,
     website: result?.website,
-    googleUrl: result?.url,
-    phoneNumber: result?.formatted_phone_number,
+    google_url: result?.url,
+    phone_number: result?.formatted_phone_number,
     address: result?.formatted_address,
-    priceLevel: result?.price_level,
-    businessStatus: result?.business_status,
-    reviews: JSON.stringify(result?.reviews),
+    price_level: result?.price_level,
+    business_status: result?.business_status,
   };
 }
 
