@@ -1,6 +1,7 @@
 const { ExportToCsv } = require('export-to-csv');
-const fs = require('fs')
+const fs = require('fs');
 const supabase = require('./clients/supabase');
+
 
 function exportToCsv(places, url) {
   const CSV_OPTIONS = {
@@ -19,6 +20,10 @@ function exportToCsv(places, url) {
   const csvData = csvExporter.generateCsv(places, true);
 
   fs.writeFileSync('list.csv', csvData)
+}
+
+function exportToJson(places) {
+  fs.writeFileSync("places.json", JSON.stringify(places))
 }
 
 async function saveToPostgres(list, places) {
