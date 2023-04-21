@@ -14,8 +14,6 @@ async function scrapeList(LIST_URL) {
       { waitUntil: 'networkidle2' }
     );
 
-    // const 'div.m6QErb.DxyBCb.kA9KIf' = 'div.m6QErb.DxyBCb.kA9KIf';
-
     // Define a helper function to get the scroll height of the element
     const getScrollHeight = async () => {
       return await page.evaluate(() => {
@@ -45,19 +43,16 @@ async function scrapeList(LIST_URL) {
       previousScrollHeight = currentScrollHeight;
     }
 
-    const listTitle = await getListTitle(page);
-    const ownerAndCount = await getListOwnerandCount(page);
+    const list = await getList(page);
     const places = await getPlaceObjects(page);
 
     console.log('Close the browser');
     await browser.close();
 
     return {
-      listTitle,
-      ownerAndCount,
+      list,
       places
     };
-
 
   } catch (error) {
     console.log('Error in puppeteer:', error);
@@ -89,24 +84,23 @@ async function getPlaceObjects(page) {
   return placeObjects;
 }
 
-async function getListOwnerandCount(page) {
-  console.log('Grabbing list owner and count...');
-  const ownerSelector = 'h2.vkU5O[jstcache="180"]';
-  const listOwnerAndCount = await page.$$eval(ownerSelector, elements => elements.map(element => element.textContent.trim())
-  );
-  console.log('listOwnerAndCount: ', listOwnerAndCount);
-
-  return listOwnerAndCount
-}
-
-async function getListTitle(page) {
+async function getList(page) {
   console.log('Grabbing list title...');
   const titleSelector = 'h1.fontTitleLarge';
   const listTitle = await page.$eval(titleSelector, element => element.textContent.trim());
   console.log('List Title: ', listTitle);
 
-  return listTitle;
-}
+  console.log('Grabbing list owner and count...');
+  const ownerSelector = 'h2.vkU5O';
+  const listOwnerAndCount = await page.$$eval(ownerSelector, elements => elements.map(element => element.textContent.trim())
+  );
+  console.log('listOwnerAndCount: ', listOwnerAndCount);
+
+  return {
+    name: listTitle,
+    description: listOwnerAndCount[0],
+  };
+};
 
 module.exports = {
   scrapeList

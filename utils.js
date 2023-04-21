@@ -21,13 +21,31 @@ function exportToCsv(places, url) {
   fs.writeFileSync('list.csv', csvData)
 }
 
-async function saveToPostgres(places) {
+async function saveToPostgres(list, places) {
   try {
-    const { error } = await supabase
-      .from('Places')
-      .insert(places);
+    // insert to Lists table
+    const { data: listData, error: listError } = await supabase
+      .from('Lists')
+      .insert(list)
+      .select();
+    const { id: listId } = listData[0];
 
-    console.log('supabase error object: ', error);
+    // insert to Places table
+    const { data: placesData, error: placesError } = await supabase
+      .from('Places')
+      .insert(places)
+      .select();
+
+    const listPlaces = placesData.map(place => ({
+      list_id: listId,
+      place_id: place.id
+    }));
+
+    // insert to List_Place table
+    const { data: listPlaceData, error: listPlaceError } = await supabase
+      .from('List_Places')
+      .insert(listPlaces);
+
   } catch (error) {
     throw (error);
   }

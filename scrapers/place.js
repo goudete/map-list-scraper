@@ -3,7 +3,6 @@ const { consts } = require('../consts');
 
 
 async function scrapePlaces(placeNamesAndTitles) {
-
   const places = [];
   for (const place of placeNamesAndTitles) {
     console.log(`[SCRAPING] ${place.name}, ${place.address}`)
@@ -35,12 +34,14 @@ async function getPlaceDetails(placeId) {
       `https://maps.googleapis.com/maps/api/place/details/json`, {
       params: {
         place_id: placeId,
-        fields: 'place_id,formatted_address,name,rating,website,editorial_summary,price_level,formatted_phone_number,business_status,url',
+        fields: 'place_id,formatted_address,adr_address,name,rating,website,editorial_summary,price_level,formatted_phone_number,business_status,url,types',
         key: consts.GOOGLE_API_KEY,
       }
     });
 
-    return data?.result 
+    console.log(JSON.stringify(data));
+
+    return data?.result
       ? transformPlaceDetails(data?.result) : [];
 
   } catch (error) {
@@ -52,6 +53,9 @@ function transformPlaceDetails(result) {
   return {
     place_id: result?.place_id,
     name: result?.name,
+    locality: extractLocality(result?.adr_address),
+    region: extractRegion(result?.adr_address),
+    country: extractCountry(result?.adr_address),
     description: result?.editorial_summary?.overview,
     rating: result?.rating,
     website: result?.website,
@@ -63,6 +67,41 @@ function transformPlaceDetails(result) {
   };
 }
 
+function extractLocality(adrAddress) {
+  const localityRegex = /<span class="locality">([^<]+)<\/span>/;
+  const localityMatch = adrAddress.match(localityRegex);
+
+  if (localityMatch && localityMatch[1]) {
+    return localityMatch[1];
+  }
+
+  return null;
+}
+
+function extractRegion(adrAddress) {
+  const regionRegex = /<span class="region">([^<]+)<\/span>/;
+  const regionMatch = adrAddress.match(regionRegex);
+
+  if (regionMatch && regionMatch[1]) {
+    return regionMatch[1];
+  }
+
+  return null;
+}
+
+function extractCountry(adrAddress) {
+  const countryRegex = /<span class="country-name">([^<]+)<\/span>/;
+  const countryMatch = adrAddress.match(countryRegex);
+
+  if (countryMatch && countryMatch[1]) {
+    return countryMatch[1];
+  }
+
+  return null;
+}
+
 module.exports = {
-  scrapePlaces
+  scrapePlaces,
+  getPlaceDetails,
+  getPlaceId
 }
