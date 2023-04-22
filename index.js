@@ -2,7 +2,8 @@ require('dotenv').config();
 
 const { scrapeList } = require('./scrapers/list');
 const { scrapePlaces } = require('./scrapers/place');
-const { exportToCsv, saveToPostgres } = require('./utils');
+const { exportToCsv, saveToPostgres, exportToJson } = require('./utils');
+const places = require('./localCache/places-thierry-asia.json');
 
 const LISTS = {
   enrique_nyc: 'https://www.google.com/maps/@40.7400281,-73.984887,13z/data=!4m3!11m2!2sJiNXPuDD6wSVJVFfyBXiCYm-A1uBDg!3e3',
@@ -22,6 +23,7 @@ const LIST_URL = LISTS['thierry_asia'];
 
     const placesWithDetails = await scrapePlaces(places);
 
+    exportToJson(placesWithDetails, 'placesWithDetails');
     // save places
     await saveToPostgres(list, placesWithDetails);
 

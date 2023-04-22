@@ -22,11 +22,12 @@ function exportToCsv(places, url) {
   fs.writeFileSync('list.csv', csvData)
 }
 
-function exportToJson(places) {
-  fs.writeFileSync("places.json", JSON.stringify(places))
+function exportToJson(places, fileName) {
+  fs.writeFileSync(`${fileName}.json`, JSON.stringify(places))
 }
 
 async function saveToPostgres(list, places) {
+
   try {
     // insert to Lists table
     const { data: listData, error: listError } = await supabase
@@ -34,12 +35,16 @@ async function saveToPostgres(list, places) {
       .insert(list)
       .select();
     const { id: listId } = listData[0];
+    console.log('listData: ', listData);
+    console.log('listError: ', listError);
 
     // insert to Places table
     const { data: placesData, error: placesError } = await supabase
       .from('Places')
       .insert(places)
-      .select();
+      .select('id');
+    console.log('placesData: ', placesData);
+    console.log('placesError: ', placesError);
 
     const listPlaces = placesData.map(place => ({
       list_id: listId,
@@ -50,6 +55,8 @@ async function saveToPostgres(list, places) {
     const { data: listPlaceData, error: listPlaceError } = await supabase
       .from('List_Places')
       .insert(listPlaces);
+    console.log('placesData: ', placesData);
+    console.log('placesError: ', placesError);
 
   } catch (error) {
     throw (error);
@@ -58,5 +65,6 @@ async function saveToPostgres(list, places) {
 
 module.exports = {
   exportToCsv,
-  saveToPostgres
+  saveToPostgres,
+  exportToJson
 }

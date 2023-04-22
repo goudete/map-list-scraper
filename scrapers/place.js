@@ -8,7 +8,7 @@ async function scrapePlaces(placeNamesAndTitles) {
     console.log(`[SCRAPING] ${place.name}, ${place.address}`)
     const placeId = await getPlaceId(`${place.name}, ${place.address}`);
     const placeDetails = await getPlaceDetails(placeId);
-    places.push(placeDetails);
+    if (placeDetails) places.push(placeDetails);
   }
 
   return places;
@@ -42,7 +42,7 @@ async function getPlaceDetails(placeId) {
     console.log(JSON.stringify(data));
 
     return data?.result
-      ? transformPlaceDetails(data?.result) : [];
+      ? transformPlaceDetails(data?.result) : null;
 
   } catch (error) {
     console.log('Error getting place details: ', error);
