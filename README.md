@@ -4,5 +4,5 @@
 - Uses pupeteer library to scrape a google maps list from a link
 
 ## Architecture
-![Architecture](/assets/architecture.png "Architecture")
+![Architecture](/localCache/assets/architecture.png "Architecture")
 
